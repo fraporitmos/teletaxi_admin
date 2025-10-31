@@ -134,10 +134,10 @@ function TravelModal({ isOpen, onClose }) {
     getPlacePredictions({
       input: "",
       locationBias: {
-        north: -5.35,
-        south: -6.98,
-        east: -79.25,
-        west: -80.01,
+        north: -0.04,
+        south: -18.35,
+        east: -68.65,
+        west: -81.33,
       },
     });
   }
@@ -189,6 +189,7 @@ function TravelModal({ isOpen, onClose }) {
     });
     if (response.ok) {
       try {
+      
         await fetch("https://teletaxiv1.fraporitmos.com/api/token/pushdriver", {
           method: "POST",
           headers: {
@@ -369,10 +370,10 @@ function TravelModal({ isOpen, onClose }) {
                 getPlacePredictions({
                   input: e.target.value,
                   locationBias: {
-                    north: -5.35,
-                    south: -6.98,
-                    east: -79.25,
-                    west: -80.01,
+                    north: -0.04,
+                    south: -18.35,
+                    east: -68.65,
+                    west: -81.33,
                   },
                 });
               }}

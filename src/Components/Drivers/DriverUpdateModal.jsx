@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import Modal from "../Modal";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Eye, EyeOff } from "lucide-react";
 import RemoteService from "../../Network/RemoteService";
 import "../../App.css";
 
@@ -10,6 +10,7 @@ function DriverUpdateModal({ isOpen, onClose, driverData }) {
   const [photoFile, setPhotoFile] = useState(null);
   const [soatFile, setSoatFile] = useState(null);
   const [licenseFile, setLicenseFile] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
   const hasFetchedCitys = useRef(false);
 
   const {
@@ -156,18 +157,27 @@ function DriverUpdateModal({ isOpen, onClose, driverData }) {
             <label htmlFor="password" className="text-onBackground">
               Clave de acceso
             </label>
-            <input
-              id="password"
-              type="password"
-              {...register("password", {
-                required: "La clave es obligatoria",
-                minLength: {
-                  value: 6,
-                  message: "La clave debe tener al menos 6 caracteres",
-                },
-              })}
-              className="block w-full px-4 py-2  bg-white border border-primaryLight  rounded-md   text-black     focus:ring focus:ring-primary focus:ring-opacity-40  focus:outline-none"
-            />
+            <div className="relative">
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                {...register("password", {
+                  required: "La clave es obligatoria",
+                  minLength: {
+                    value: 6,
+                    message: "La clave debe tener al menos 6 caracteres",
+                  },
+                })}
+                className="block w-full px-4 py-2 bg-white border border-primaryLight rounded-md text-black focus:ring focus:ring-primary focus:ring-opacity-40 focus:outline-none pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-2 text-gray-600"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
             {errors.password && (
               <p className="mt-1 text-sm text-red-600">
                 {errors.password.message}
