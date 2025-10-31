@@ -74,9 +74,26 @@ function TravelModal({ isOpen, onClose }) {
   }, [setValue]);
 
   useEffect(() => {
-    if (!(isOpen && /^\d{9}$/.test(phonePassenger))) return;
-    fetchPassengerAndPlaces(phonePassenger);
-  }, [phonePassenger, isOpen]);
+    if (isOpen) {
+      // Reiniciar autocompletado al abrir el modal
+      setSelectPlaceSaved(false);
+      setMarkerPosition({ lat: -6.776, lng: -79.844 }); // Chiclayo
+      setMapZoom(14);
+      getPlacePredictions({
+        input: "",
+        locationBias: {
+          north: -6.6,
+          south: -6.9,
+          east: -79.7,
+          west: -80.1,
+        },
+        region: "PE",
+      });
+      if (/^\d{9}$/.test(phonePassenger)) {
+        fetchPassengerAndPlaces(phonePassenger);
+      }
+    }
+  }, [isOpen]);
 
   async function fetchPassengerAndPlaces(phone) {
     try {
@@ -131,6 +148,8 @@ function TravelModal({ isOpen, onClose }) {
       setValue("originAddress", place.address);
       setMarkerPosition({ lat: place.location.lat, lng: place.location.lon });
       setMapZoom(16);
+      const priceInput = document.getElementById("price");
+      if (priceInput) priceInput.focus();
     }
   }
 
@@ -342,6 +361,7 @@ function TravelModal({ isOpen, onClose }) {
               className="block w-full px-4 py-2 bg-white border border-primaryLight rounded-md text-dark focus:ring focus:ring-primary focus:ring-opacity-40 focus:outline-none"
               placeholder="Busca una dirección"
               onChange={(e) => {
+                if (selectPlaceSaved) return;
                 if (!selectedCity) {
                   setValue("originAddress", "");
                   alert("Selecciona una ciudad primero");
@@ -359,8 +379,8 @@ function TravelModal({ isOpen, onClose }) {
                 });
               }}
             />
-            {isPlacePredictionsLoading && (
-              <p className="bg-white text-black rounded-md  p-2 text-md">
+            {isPlacePredictionsLoading && !selectPlaceSaved && (
+              <p className="bg-white text-black rounded-md p-2 text-md">
                 Cargando...
               </p>
             )}
@@ -398,9 +418,7 @@ function TravelModal({ isOpen, onClose }) {
             <input
               placeholder="Referencia"
               id="reference"
-              {...register("reference", {
-                required: "El nombre es obligatorio",
-              })}
+              {...register("reference")}
               className="block w-full px-4 py-2  bg-white border border-primaryLight rounded-md text-dark focus:ring focus:ring-primary focus:ring-opacity-40  focus:outline-none"
             />
           </div>
