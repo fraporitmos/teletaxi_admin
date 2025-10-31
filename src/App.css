@@ -1,0 +1,41 @@
+:root {
+    --colorPrimary:      #FFD203;
+    --colorPrimaryDark: #977D00;
+    --bg-primary:    #1F1E1E;
+    --bg-secondary:  #2B2B2B;
+    --text-color:    #FFFADF;
+
+  }
+  
+  .backgroundPrimary {
+    background-color: var(--bg-primary);
+  }
+  
+  .backgroundSecondary {
+    background-color: var(--bg-secondary);
+  }
+  
+
+  .textColor {
+    color: var(--text-color);
+  }
+
+  .borderPrimary {
+    color: var(--colorPrimaryDark);
+  }
+
+/* Custom scrollbar */
+.scroll-default {
+  scrollbar-width: thin;
+  scrollbar-color: var(--colorPrimaryDark) var(--bg-secondary);
+}
+.scroll-default::-webkit-scrollbar {
+  width: 8px;
+}
+.scroll-default::-webkit-scrollbar-track {
+  background: rgba(255, 250, 223, 0.2);
+}
+.scroll-default::-webkit-scrollbar-thumb {
+  background-color: var(--colorPrimaryDark);
+  border-radius: 4px;
+}
