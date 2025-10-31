@@ -19,12 +19,14 @@ function formatDate(date) {
 }
 
 function getMapCenterFromCoords(coordsNorthwest, coordsSoutheast) {
+  // Use lat for latitude, lon (or lng) for longitude
   const lat = (coordsNorthwest.lat + coordsSoutheast.lat) / 2;
   const lng = (coordsNorthwest.lon + coordsSoutheast.lon) / 2;
   return { lat, lng };
 }
 
 function getBoundsFromCoords(coordsNorthwest, coordsSoutheast) {
+  // Use lat for north/south, lon for east/west
   return {
     north: Math.max(coordsNorthwest.lat, coordsSoutheast.lat),
     south: Math.min(coordsNorthwest.lat, coordsSoutheast.lat),
@@ -35,7 +37,9 @@ function getBoundsFromCoords(coordsNorthwest, coordsSoutheast) {
 
 
 function TravelModal({ isOpen, onClose }) {
-  const [cities, setCities] = useState([]);
+  const [cities] = useState([
+    { id: "r9471och60bcw9u", nameCity: "Chiclayo" },
+  ]);
   const [places, setPlaces] = useState([]);
   const [existPassenger, setExistPassenger] = useState(false);
   const [selectPlaceSaved, setSelectPlaceSaved] = useState(false);
@@ -66,20 +70,8 @@ function TravelModal({ isOpen, onClose }) {
   const phonePassenger = watch("phonePassenger");
 
   useEffect(() => {
-    if (!isOpen) return;
-    async function fetchCities() {
-      try {
-        if (!hasFetchedCities.current) {
-          const { items } = await RemoteService.get("/collections/city/records");
-          setCities(items);
-          hasFetchedCities.current = true;
-        }
-      } catch (err) {
-        alert("Failed to fetch cities. " + err);
-      }
-    }
-    fetchCities();
-  }, [isOpen]);
+    setValue("cityId", "r9471och60bcw9u");
+  }, [setValue]);
 
   useEffect(() => {
     if (!(isOpen && /^\d{9}$/.test(phonePassenger))) return;
@@ -118,28 +110,16 @@ function TravelModal({ isOpen, onClose }) {
     }
   }
 
-  function handleCitySelect(e) {
-    const selectedId = e.target.value;
-    const city = cities.find((c) => c.id === selectedId);
-    if (city) {
-      handleSetAutocompleteCoords(city.coordsNorthwest, city.coordsSoutheast);
-    }
-  }
+  function handleCitySelect() {}
 
-  function handleSetAutocompleteCoords(coordsNorthwest, coordsSoutheast) {
-    const center = getMapCenterFromCoords(coordsNorthwest, coordsSoutheast);
+  function handleSetAutocompleteCoords() {
+    const center = { lat: -6.776, lng: -79.844 }; // Chiclayo
+    console.log("Centro fijo aplicado (Chiclayo):", center);
     setMarkerPosition(center);
-    setAutocompleteBounds(getBoundsFromCoords(coordsNorthwest, coordsSoutheast));
-    setValue("originAddress", "");
-    getPlacePredictions({
-      input: "",
-      locationBias: {
-        north: -0.04,
-        south: -18.35,
-        east: -68.65,
-        west: -81.33,
-      },
-    });
+    if (mapRef.current) {
+      mapRef.current.panTo(center);
+    }
+    setMapZoom(13);
   }
 
   function handleSavedPlaceSelect(e) {
@@ -189,7 +169,7 @@ function TravelModal({ isOpen, onClose }) {
     });
     if (response.ok) {
       try {
-      
+        
         await fetch("https://teletaxiv1.fraporitmos.com/api/token/pushdriver", {
           method: "POST",
           headers: {
@@ -303,7 +283,7 @@ function TravelModal({ isOpen, onClose }) {
               {...cityRegister}
               onChange={(e) => {
                 cityRegister.onChange(e);
-                handleCitySelect(e);
+                handleCitySelect();
               }}
               className="block w-full px-4 py-2  bg-white border border-gray-200 rounded-md text-black dark:border-gray-600 focus:ring focus:ring-primary focus:ring-opacity-40  focus:outline-none"
             >
@@ -370,11 +350,12 @@ function TravelModal({ isOpen, onClose }) {
                 getPlacePredictions({
                   input: e.target.value,
                   locationBias: {
-                    north: -0.04,
-                    south: -18.35,
-                    east: -68.65,
-                    west: -81.33,
+                    north: -6.6,
+                    south: -6.9,
+                    east: -79.7,
+                    west: -80.1,
                   },
+                  region: "PE",
                 });
               }}
             />
