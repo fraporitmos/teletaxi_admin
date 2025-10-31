@@ -8,16 +8,20 @@ function PassengerTables() {
   const [passengers, setPassengers] = useState([]);
   const [filterPassengers, setfilterPassengers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const hasFetchedPassenger = useRef(false);
 
   useEffect(() => {
-    const fetchItems = async () => {
+    const fetchItems = async (page = 1) => {
       try {
         if (!hasFetchedPassenger.current) {
-          const { items } = await RemoteService.get("/collections/passenger/records?expand=cityId&sort=-created");
+          const { items, totalPages } = await RemoteService.get(`/collections/passenger/records?expand=cityId&sort=-created&page=${page}&perPage=10`);
           console.log(JSON.stringify(items))
           setPassengers(items);
           setfilterPassengers(items);
+          setTotalPages(totalPages);
+          setCurrentPage(page);
           hasFetchedPassenger.current = true;
         }
       } catch (err) {
@@ -27,6 +31,18 @@ function PassengerTables() {
 
     fetchItems();
   }, []);
+
+  const fetchItems = async (page = 1) => {
+    try {
+      const { items, totalPages } = await RemoteService.get(`/collections/passenger/records?expand=cityId&sort=-created&page=${page}&perPage=10`);
+      setPassengers(items);
+      setfilterPassengers(items);
+      setTotalPages(totalPages);
+      setCurrentPage(page);
+    } catch (err) {
+      alert("Failed to fetch passengers. " + err);
+    }
+  };
 
   const handleSearch = (e) => {
     const term = e.target.value.toLowerCase();
@@ -52,11 +68,11 @@ function PassengerTables() {
           <input
             type="text"
             placeholder="Buscar pasajeros..."
-            className={`backgroundSecondary textColor placeholder-gray-400 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-primaryDark`}
+              className={`bg-gray-700 textColor placeholder-white rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-primaryDark`}
             onChange={handleSearch}
             value={searchTerm}
           />
-          <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
+          <Search className="absolute left-3 top-2.5 text-white" size={18} />
         </div>
       </div>
 
@@ -148,6 +164,25 @@ function PassengerTables() {
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="flex justify-center items-center mt-4 space-x-4">
+        <button
+          onClick={() => fetchItems(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="px-4 py-2 bg-gray-700 text-white rounded disabled:opacity-50"
+        >
+          Anterior
+        </button>
+        <span className="textColor">
+          Página {currentPage} de {totalPages}
+        </span>
+        <button
+          onClick={() => fetchItems(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 bg-gray-700 text-white rounded disabled:opacity-50"
+        >
+          Siguiente
+        </button>
       </div>
     </motion.div>
   );

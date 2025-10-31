@@ -15,14 +15,17 @@ function TravelsTable() {
   const [cities, setCities] = useState([]);
   const [selectedCity, setSelectedCity] = useState("");
   const [modalDriver, setModalTravel] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
     let isMounted = true;
 
-    const fetchRequests = async () => {
+    const fetchRequests = async (page = 1) => {
       try {
-        const { items } = await RemoteService.get(
-          "/collections/travel/records?expand=cityId,passengerId,driverId,driverId.vehicleId&sort=-created"
+        const today = new Date().toISOString().split("T")[0];
+        const { items, totalPages } = await RemoteService.get(
+          `/collections/travel/records?filter=created~'${today}'&expand=cityId,passengerId,driverId,driverId.vehicleId&sort=-created&page=${page}&perPage=10`
         );
         const sortedItems = items.sort(
           (a, b) => new Date(b.created) - new Date(a.created)
@@ -30,6 +33,8 @@ function TravelsTable() {
         if (isMounted) {
           setRequests(sortedItems);
           setFilteredRequests(sortedItems);
+          setTotalPages(totalPages);
+          setCurrentPage(page);
         }
       } catch (err) {
         alert("Failed to fetch requests. " + err);
@@ -39,12 +44,8 @@ function TravelsTable() {
     // Initial fetch
     fetchRequests();
 
-    // Poll every 8 seconds
-    const intervalId = setInterval(fetchRequests, 8000);
-
     return () => {
       isMounted = false;
-      clearInterval(intervalId);
     };
   }, []);
 
@@ -133,7 +134,7 @@ function TravelsTable() {
     <>
       <TravelModal isOpen={modalDriver} onClose={handleModalClose} />
       <motion.div
-        className="bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border border-gray-700 mb-8"
+        className=" backdrop-blur-md shadow-lg rounded-xl p-6 border border-gray-700 mb-8"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
@@ -156,22 +157,22 @@ function TravelsTable() {
               <button
                 type="button"
                 onClick={() => setModalTravel(true)}
-                className="py-2  ml-4 px-4 flex justify-center items-center  bg-primaryLight  focus:ring-primary focus:ring-offset-gray-200 text-white  transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
+                className="py-2  ml-4 px-4 flex justify-center items-center  bg-primary focus:ring-primary focus:ring-offset-gray-200 text-white  transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
               >
-                Crear Viaje
+                Crear Viaje web
               </button>
             </div>
 
             <div className="relative mt-6 sm:mt-0">
               <input
                 type="text"
-                placeholder="Search requests..."
+                placeholder="Buscar viajes..."
                 className="bg-gray-700  text-white placeholder-gray-400 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 onChange={handleSearch}
                 value={searchTerm}
               />
               <Search
-                className="absolute left-3 top-2.5 text-gray-400"
+                className="absolute left-3 top-2.5 text-white"
                 size={18}
               />
             </div>
@@ -186,29 +187,29 @@ function TravelsTable() {
             <table className="min-w-full divide-y divide-gray-700 ">
               <thead>
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                     Hora
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                     Conductor
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                     Unidad
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                     Pasajero
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                     Ruta
                   </th>
 
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                     Estado
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                     Precio
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                     Acción
                   </th>
                 </tr>
@@ -223,13 +224,13 @@ function TravelsTable() {
                       animate={{ opacity: 1 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-black">
                         {new Date(request.created).toLocaleTimeString("es-PE", {
                           hour: "2-digit",
                           minute: "2-digit",
                         })}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-black">
                         {request.namesDriver ? (
                           request.namesDriver
                         ) : (
@@ -237,27 +238,27 @@ function TravelsTable() {
                         )}
                       </td>
 
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-black">
                         {request.unit ? (
                           request.unit
                         ) : (
                           <span>No confirmado</span>
                         )}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-black">
                         {request.namesPassenger}
                       </td>
 
-                      <td className="px-6 py-4 text-sm text-gray-300">
-                        <strong className="text-yellow-200">Origen:</strong>{" "}
+                      <td className="px-6 py-4 text-sm text-black">
+                        <strong className="text-green-600 font-black">Origen:</strong>{" "}
                         {request.originAddress}
                         <br />
-                        <strong className="text-yellow-200">
+                        <strong className="text-green-600 font-black">
                           Destino:
                         </strong>{" "}
                         {request.destinationAddress ? request.destinationAddress : "No hay destino"}
                         <br />
-                        <strong className="text-yellow-200">
+                        <strong className="text-green-600 font-black">
                           Referencia:
                         </strong>{" "}
                         {request.reference === ""
@@ -265,11 +266,11 @@ function TravelsTable() {
                           : request.reference}
                       </td>
 
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-black">
                         <span
                           className={`px-2 w-24 text-center inline-flex justify-center items-center text-xs leading-5 font-semibold rounded-full ${
                             request.status.toLowerCase() === "pendiente"
-                              ? "bg-gray-600 text-gray-100"
+                              ? "bg-gray-600 text-black"
                               : request.status.toLowerCase() === "aceptado"
                               ? "bg-green-800 text-green-100"
                               : request.status.toLowerCase() === "finalizado"
@@ -282,10 +283,10 @@ function TravelsTable() {
                           {request.status}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-xl whitespace-nowrap text-gray-300">
+                      <td className="px-6 py-4 text-xl whitespace-nowrap text-black">
                         S/ {request.price}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-black">
                         <button
                           className="mr-2"
                           onClick={() => {
@@ -337,6 +338,63 @@ function TravelsTable() {
                 })}
               </tbody>
             </table>
+            <div className="flex justify-center items-center mt-4 space-x-4">
+              <button
+                onClick={() => {
+                  const fetchRequests = async (page = 1) => {
+                    try {
+                      const today = new Date().toISOString().split("T")[0];
+                      const { items, totalPages } = await RemoteService.get(
+                        `/collections/travel/records?filter=created~'${today}'&expand=cityId,passengerId,driverId,driverId.vehicleId&sort=-created&page=${page}&perPage=10`
+                      );
+                      const sortedItems = items.sort(
+                        (a, b) => new Date(b.created) - new Date(a.created)
+                      );
+                      setRequests(sortedItems);
+                      setFilteredRequests(sortedItems);
+                      setTotalPages(totalPages);
+                      setCurrentPage(page);
+                    } catch (err) {
+                      alert("Failed to fetch requests. " + err);
+                    }
+                  };
+                  fetchRequests(currentPage - 1);
+                }}
+                disabled={currentPage === 1}
+                className="px-4 py-2 bg-gray-700 text-white rounded disabled:opacity-50"
+              >
+                Anterior
+              </button>
+              <span className="textColor">
+                Página {currentPage} de {totalPages}
+              </span>
+              <button
+                onClick={() => {
+                  const fetchRequests = async (page = 1) => {
+                    try {
+                      const today = new Date().toISOString().split("T")[0];
+                      const { items, totalPages } = await RemoteService.get(
+                        `/collections/travel/records?filter=created~'${today}'&expand=cityId,passengerId,driverId,driverId.vehicleId&sort=-created&page=${page}&perPage=10`
+                      );
+                      const sortedItems = items.sort(
+                        (a, b) => new Date(b.created) - new Date(a.created)
+                      );
+                      setRequests(sortedItems);
+                      setFilteredRequests(sortedItems);
+                      setTotalPages(totalPages);
+                      setCurrentPage(page);
+                    } catch (err) {
+                      alert("Failed to fetch requests. " + err);
+                    }
+                  };
+                  fetchRequests(currentPage + 1);
+                }}
+                disabled={currentPage === totalPages}
+                className="px-4 py-2 bg-gray-700 text-white rounded disabled:opacity-50"
+              >
+                Siguiente
+              </button>
+            </div>
           </div>
         )}
       </motion.div>

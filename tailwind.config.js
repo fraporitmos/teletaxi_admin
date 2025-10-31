@@ -7,13 +7,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        'primary': '#FFD203',
-        'primaryDark': '#A38A16',
-        'primaryLight': '#9E7206',
-        'background': '#2B2B2B',
+        'primary': '#136019',
+        'primaryDark': '#06340B',
+        'primaryLight': '#C3FFC8',
+        'background': '#FFFFFF',
         'backgroundDark': '#1F1E1E',
-        'onBackground': '#FFFADF',
-        'onBackgroundDark': '#FFFADF'
+        'onBackground': '#000000',
+        'onBackgroundDark': '#FFFFFF'
 
       },
     },

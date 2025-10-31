@@ -99,7 +99,7 @@ function DriverModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Crear conductor">
+    <Modal isOpen={isOpen} onClose={onClose} >
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-8 scroll-default  max-h-[80vh] overflow-y-auto custom-scroll"
@@ -114,7 +114,7 @@ function DriverModal({ isOpen, onClose }) {
               {...register("namesDriver", {
                 required: "El nombre es obligatorio",
               })}
-              className="block w-full px-4 py-2  bg-white border border-primaryLight rounded-md text-dark focus:ring focus:ring-primary focus:ring-opacity-40  focus:outline-none"
+              className="block w-full px-4 py-2  bg-white border border-primary rounded-md text-dark focus:ring focus:ring-primary focus:ring-opacity-40  focus:outline-none"
             />
             {errors.names && (
               <p className="mt-1 text-sm text-red-600">
@@ -137,7 +137,7 @@ function DriverModal({ isOpen, onClose }) {
                   message: "El DNI debe tener 8 dígitos",
                 },
               })}
-              className="block w-full px-4 py-2  bg-white border border-primaryLight  rounded-md text-black    focus:ring focus:ring-primary focus:ring-opacity-40  focus:outline-none"
+              className="block w-full px-4 py-2  bg-white border border-primary  rounded-md text-black    focus:ring focus:ring-primary focus:ring-opacity-40  focus:outline-none"
             />
             {errors.documentNumber && (
               <p className="mt-1 text-sm text-red-600">
@@ -159,7 +159,7 @@ function DriverModal({ isOpen, onClose }) {
                   message: "El correo es inválido",
                 },
               })}
-              className="block w-full px-4 py-2  bg-white border border-primaryLight  rounded-md text-black    focus:ring focus:ring-primary focus:ring-opacity-40  focus:outline-none"
+              className="block w-full px-4 py-2  bg-white border border-primary  rounded-md text-black    focus:ring focus:ring-primary focus:ring-opacity-40  focus:outline-none"
             />
             {errors.email && (
               <p className="mt-1 text-sm text-red-600">
@@ -183,7 +183,7 @@ function DriverModal({ isOpen, onClose }) {
                   message: "El teléfono debe tener 9 dígitos y empezar en 9",
                 },
               })}
-              className="block w-full px-4 py-2  bg-white border border-primaryLight rounded-md text-dark    focus:ring focus:ring-primary focus:ring-opacity-40  focus:outline-none"
+              className="block w-full px-4 py-2  bg-white border border-primary rounded-md text-dark    focus:ring focus:ring-primary focus:ring-opacity-40  focus:outline-none"
             />
             {errors.phoneDriver && (
               <p className="mt-1 text-sm text-red-600">
@@ -206,7 +206,7 @@ function DriverModal({ isOpen, onClose }) {
                   message: "La clave debe tener al menos 6 caracteres",
                 },
               })}
-              className="block w-full px-4 py-2  bg-white border border-primaryLight  rounded-md   text-black     focus:ring focus:ring-primary focus:ring-opacity-40  focus:outline-none"
+              className="block w-full px-4 py-2  bg-white border border-primary  rounded-md   text-black     focus:ring focus:ring-primary focus:ring-opacity-40  focus:outline-none"
             />
             {errors.password && (
               <p className="mt-1 text-sm text-red-600">
@@ -247,7 +247,7 @@ function DriverModal({ isOpen, onClose }) {
               type="file"
               accept="image/*"
               onChange={(e) => setPhotoFile(e.target.files[0])}
-              className="block w-full px-4 py-1 bg-white border border-primaryLight rounded-md"
+              className="block w-full px-4 py-1 bg-white border border-primary rounded-md"
             />
           </div>
 
@@ -258,7 +258,7 @@ function DriverModal({ isOpen, onClose }) {
             <input
               id="plate"
               {...register("plate", { required: "La placa es obligatoria" })}
-              className="block w-full px-4 py-2  bg-white border border-primaryLight rounded-md text-dark focus:ring focus:ring-primary focus:ring-opacity-40  focus:outline-none"
+              className="block w-full px-4 py-2  bg-white border border-primary rounded-md text-dark focus:ring focus:ring-primary focus:ring-opacity-40  focus:outline-none"
             />
             {errors.plate && (
               <p className="mt-1 text-sm text-red-600">
@@ -275,7 +275,7 @@ function DriverModal({ isOpen, onClose }) {
               type="file"
               accept=".pdf,.doc,.docx,image/*"
               onChange={(e) => setLicenseFile(e.target.files[0])}
-              className="block w-full px-4 py-1 bg-white border border-primaryLight rounded-md"
+              className="block w-full px-4 py-1 bg-white border border-primary rounded-md"
             />
           </div>
 
@@ -286,7 +286,7 @@ function DriverModal({ isOpen, onClose }) {
             <input
               id="model"
               {...register("model", { required: "El modelo es obligatoria" })}
-              className="block w-full px-4 py-2  bg-white border border-primaryLight rounded-md text-dark focus:ring focus:ring-primary focus:ring-opacity-40  focus:outline-none"
+              className="block w-full px-4 py-2  bg-white border border-primary rounded-md text-dark focus:ring focus:ring-primary focus:ring-opacity-40  focus:outline-none"
             />
             {errors.model && (
               <p className="mt-1 text-sm text-red-600">
@@ -303,7 +303,7 @@ function DriverModal({ isOpen, onClose }) {
               type="file"
               accept=".pdf,.doc,.docx,image/*"
               onChange={(e) => setSoatFile(e.target.files[0])}
-              className="block w-full px-4 py-1 bg-white border border-primaryLight rounded-md"
+              className="block w-full px-4 py-1 bg-white border border-primary rounded-md"
             />
           </div>
 
@@ -314,7 +314,7 @@ function DriverModal({ isOpen, onClose }) {
             <input
               id="year"
               {...register("year", { required: "El año es obligatoria" })}
-              className="block w-full px-4 py-2  bg-white border border-primaryLight rounded-md text-dark focus:ring focus:ring-primary focus:ring-opacity-40  focus:outline-none"
+              className="block w-full px-4 py-2  bg-white border border-primary rounded-md text-dark focus:ring focus:ring-primary focus:ring-opacity-40  focus:outline-none"
             />
             {errors.year && (
               <p className="mt-1 text-sm text-red-600">{errors.year.message}</p>
@@ -327,7 +327,7 @@ function DriverModal({ isOpen, onClose }) {
             <input
               id="color"
               {...register("color", { required: "El color es obligatoria" })}
-              className="block w-full px-4 py-2  bg-white border border-primaryLight rounded-md text-dark focus:ring focus:ring-primary focus:ring-opacity-40  focus:outline-none"
+              className="block w-full px-4 py-2  bg-white border border-primary rounded-md text-dark focus:ring focus:ring-primary focus:ring-opacity-40  focus:outline-none"
             />
             {errors.color && (
               <p className="mt-1 text-sm text-red-600">
@@ -343,7 +343,7 @@ function DriverModal({ isOpen, onClose }) {
             <input
               id="unit"
               {...register("unit", { required: "Nmr de unidad obligatoria" })}
-              className="block w-full px-4 py-2  bg-white border border-primaryLight rounded-md text-dark focus:ring focus:ring-primary focus:ring-opacity-40  focus:outline-none"
+              className="block w-full px-4 py-2  bg-white border border-primary rounded-md text-dark focus:ring focus:ring-primary focus:ring-opacity-40  focus:outline-none"
             />
             {errors.unit && (
               <p className="mt-1 text-sm text-red-600">{errors.unit.message}</p>
@@ -353,7 +353,7 @@ function DriverModal({ isOpen, onClose }) {
 
         <button
           type="submit"
-          className="w-full py-2 mt-4 text-white bg-primaryLight rounded-lg hover:bg-primaryDark transition-colors duration-200"
+          className="w-full py-2 mt-4 text-white bg-primary rounded-lg hover:bg-primaryDark transition-colors duration-200"
         >
           Registrar
         </button>

@@ -160,13 +160,10 @@ const MapPage = () => {
             key={m.id}
             position={{ lat: m.lat, lng: m.lng }}
             icon={{
-              url:
-                m.status === 'ocupado'
-                  ? ocupadoIcon
-                  : m.status === 'enruta'
-                  ? enrutaIcon
-                  : disponibleIcon,
-              scaledSize: new window.google.maps.Size(50, 50),
+            
+              url: `https://raw.githubusercontent.com/Concept211/Google-Maps-Markers/master/images/marker_black${m.unidad}.png`,
+              scaledSize: new window.google.maps.Size(46, 52),
+              anchor: new window.google.maps.Point(32, 32),
             }}
             onClick={() => setActiveMarker(m.id)}
           />

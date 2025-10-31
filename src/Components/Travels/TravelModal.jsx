@@ -265,7 +265,7 @@ function TravelModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Crear Viaje">
+    <Modal isOpen={isOpen} onClose={onClose}>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-8 scroll-default  max-h-[85vh] overflow-y-auto custom-scroll"
@@ -281,7 +281,7 @@ function TravelModal({ isOpen, onClose }) {
                 minLength: { value: 9, message: "Debe tener 9 dígitos" },
               })}
               maxLength={9}
-              className="block w-full px-4 py-2  bg-white border border-primaryLight rounded-md text-dark focus:ring focus:ring-primary focus:ring-opacity-40  focus:outline-none"
+              className="block w-full px-4 py-2  bg-white border border-primary rounded-md text-dark focus:ring focus:ring-primary focus:ring-opacity-40  focus:outline-none"
             />
           </div>
 
@@ -292,7 +292,7 @@ function TravelModal({ isOpen, onClose }) {
               {...register("namesPassenger", {
                 required: "El nombre es obligatorio",
               })}
-              className="block w-full px-4 py-2  bg-white border border-primaryLight rounded-md text-dark focus:ring focus:ring-primary focus:ring-opacity-40  focus:outline-none"
+              className="block w-full px-4 py-2  bg-white border border-primary rounded-md text-dark focus:ring focus:ring-primary focus:ring-opacity-40  focus:outline-none"
             />
           </div>
 
@@ -358,7 +358,7 @@ function TravelModal({ isOpen, onClose }) {
               {...register("originAddress", {
                 required: "La ciudad  es obligatorio",
               })}
-              className="block w-full px-4 py-2 bg-white border border-primaryLight rounded-md text-dark focus:ring focus:ring-primary focus:ring-opacity-40 focus:outline-none"
+              className="block w-full px-4 py-2 bg-white border border-primary rounded-md text-dark focus:ring focus:ring-primary focus:ring-opacity-40 focus:outline-none"
               placeholder="Busca una dirección"
               onChange={(e) => {
                 if (selectPlaceSaved) return;
@@ -419,7 +419,7 @@ function TravelModal({ isOpen, onClose }) {
               placeholder="Referencia"
               id="reference"
               {...register("reference")}
-              className="block w-full px-4 py-2  bg-white border border-primaryLight rounded-md text-dark focus:ring focus:ring-primary focus:ring-opacity-40  focus:outline-none"
+              className="block w-full px-4 py-2  bg-white border border-primary rounded-md text-dark focus:ring focus:ring-primary focus:ring-opacity-40  focus:outline-none"
             />
           </div>
           <div>
@@ -428,9 +428,8 @@ function TravelModal({ isOpen, onClose }) {
               id="price"
               type="text"
               step="any"
-              defaultValue={8}
               {...register("price", { valueAsNumber: true })}
-              className="block w-full px-4 py-2  bg-white border border-primaryLight rounded-md text-dark focus:ring focus:ring-primary focus:ring-opacity-40  focus:outline-none"
+              className="block w-full px-4 py-2  bg-white border border-primary rounded-md text-dark focus:ring focus:ring-primary focus:ring-opacity-40  focus:outline-none"
             />
           </div>
         </div>
@@ -494,7 +493,7 @@ function TravelModal({ isOpen, onClose }) {
         </div>
         <button
           type="submit"
-          className="w-full py-2 mt-4 text-white bg-primaryLight rounded-lg hover:bg-primaryDark transition-colors duration-200"
+          className="w-full py-2 mt-4 text-white bg-primary rounded-lg hover:bg-primaryDark transition-colors duration-200"
         >
           Enviar
         </button>

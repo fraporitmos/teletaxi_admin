@@ -17,6 +17,9 @@ function DriverTables() {
   const [searchTerm, setSearchTerm] = useState("");
   const hasFetchedPassenger = useRef(false);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
   useEffect(() => {
     fetchDrivers();
   }, []);
@@ -28,15 +31,16 @@ function DriverTables() {
     }
   }, [modalDriver]);
 
-  const fetchDrivers = async () => {
+  const fetchDrivers = async (page = 1) => {
     try {
-      if (!hasFetchedPassenger.current) {
-        const { items } = await RemoteService.get(
-          "/collections/driver/records?expand=cityId,vehicleId"
+      if (!hasFetchedPassenger.current || page !== currentPage) {
+        const { items, totalPages } = await RemoteService.get(
+          `/collections/driver/records?page=${page}&perPage=10`
         );
-
         setPassengers(items);
         setfilterPassengers(items);
+        setTotalPages(totalPages);
+        setCurrentPage(page);
         hasFetchedPassenger.current = true;
       }
     } catch (err) {
@@ -44,16 +48,19 @@ function DriverTables() {
     }
   };
 
-  const handleSearch = (e) => {
+  const handleSearch = async (e) => {
     const term = e.target.value.toLowerCase();
     setSearchTerm(term);
-    const filtered = passengers.filter(
-      (item) =>
-        item.namesDriver.toLowerCase().includes(term) ||
-        item.emailDriver.toLowerCase().includes(term) ||
-        item.phoneDriver.includes(term)
-    );
-    setfilterPassengers(filtered);
+    try {
+      const { items, totalPages } = await RemoteService.get(
+        `/collections/driver/records?filter=(namesDriver~'${term}'||emailDriver~'${term}'||phoneDriver~'${term}')&page=1&perPage=10`
+      );
+      setfilterPassengers(items);
+      setTotalPages(totalPages);
+      setCurrentPage(1);
+    } catch (err) {
+      alert("Error al buscar conductores. " + err);
+    }
   };
 
   const handleModalClose = () => {
@@ -88,19 +95,19 @@ function DriverTables() {
             <input
               type="text"
               placeholder="Buscar conductor..."
-              className={`backgroundSecondary textColor placeholder-gray-400 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-primaryDark`}
+              className={`bg-gray-700 textColor placeholder-white rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-primaryDark`}
               onChange={handleSearch}
               value={searchTerm}
             />
             <Search
-              className="absolute left-3 top-2.5 text-gray-400"
+              className="absolute left-3 top-2.5 text-white"
               size={18}
             />
           </div>
           <button
             type="button"
             onClick={() => setDriverModal(true)}
-            className="py-2  w-1/4 px-4 flex justify-center items-center  bg-primaryLight  focus:ring-primary focus:ring-offset-gray-200 text-white  transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
+            className="py-2  w-1/4 px-4 flex justify-center items-center  bg-primary  focus:ring-primary focus:ring-offset-gray-200 text-white  transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
           >
             Nuevo
           </button>
@@ -217,6 +224,25 @@ function DriverTables() {
           </table>
         </div>
       </motion.div>
+      <div className="flex justify-center mt-4 space-x-4">
+        <button
+          onClick={() => fetchDrivers(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="px-4 py-2 bg-gray-700 text-white rounded disabled:opacity-50"
+        >
+          Anterior
+        </button>
+        <span className="textColor">
+          Página {currentPage} de {totalPages}
+        </span>
+        <button
+          onClick={() => fetchDrivers(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 bg-gray-700 text-white rounded disabled:opacity-50"
+        >
+          Siguiente
+        </button>
+      </div>
     </>
   );
 }
