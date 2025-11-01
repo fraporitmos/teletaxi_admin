@@ -20,7 +20,7 @@ function App() {
   useEffect(() => {
     const user = localStorage.getItem('username')
     const pass = localStorage.getItem('password')
-    if (user === 'teletaxi@chiclayo.com' && pass === 'teletaxi$2025') {
+    if (user === `${import.meta.env.VITE_USERNAME}` && pass === `${import.meta.env.VITE_PASSWORD}`) {
       setAuthenticated(true)
     }
   }, [])

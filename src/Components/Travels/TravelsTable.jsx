@@ -270,7 +270,7 @@ function TravelsTable() {
                         <span
                           className={`px-2 w-24 text-center inline-flex justify-center items-center text-xs leading-5 font-semibold rounded-full ${
                             request.status.toLowerCase() === "pendiente"
-                              ? "bg-gray-600 text-black"
+                              ? "bg-gray-700 text-white"
                               : request.status.toLowerCase() === "aceptado"
                               ? "bg-green-800 text-green-100"
                               : request.status.toLowerCase() === "finalizado"

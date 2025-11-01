@@ -58,7 +58,7 @@ const MapPage = () => {
   }, [selectedCity]);
 
   useEffect(() => {
-    const socket = io("https://teletaxiv1.fraporitmos.com/location_driver", {
+    const socket = io(`${import.meta.env.VITE_API_SOCKET}`, {
       path: "/socket.io",
       reconnection: true,
       reconnectionAttempts: Infinity,

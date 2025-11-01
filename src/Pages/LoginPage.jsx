@@ -8,14 +8,14 @@ const LoginPage = ({ onLogin }) => {
   useEffect(() => {
     const storedUsername = localStorage.getItem('username')
     const storedPassword = localStorage.getItem('password')
-    if (storedUsername === 'teletaxi@chiclayo.com' && storedPassword === 'teletaxi$2025') {
+    if (storedUsername === `${import.meta.env.VITE_USERNAME}` && storedPassword === `${import.meta.env.VITE_PASSWORD}`) {
       onLogin()
       navigate('/')
     }
   }, [navigate, onLogin])
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (username === 'teletaxi@chiclayo.com' && password === 'teletaxi$2025') {
+    if (username === `${import.meta.env.VITE_USERNAME}` && password === `${import.meta.env.VITE_PASSWORD}`) {
       localStorage.setItem('username', username)
       localStorage.setItem('password', password)
       onLogin()
@@ -30,7 +30,7 @@ const LoginPage = ({ onLogin }) => {
   <img src="https://res.cloudinary.com/dyzga4bnr/image/upload/v1752101504/jesus-navarro-2k4X2lQKU_g-unsplash_prghqy.jpg" alt="Placeholder Image" class="object-cover w-full h-full" />
 </div>
 <div class="lg:p-36 md:p-52 sm:20 p-8 w-full lg:w-1/2">
-  <h1 class="text-2xl text-white font-semibold mb-4">Teletaxi - Chiclayo</h1>
+  <h1 class="text-2xl text-white font-semibold mb-4">"TaxiAdmin - Chiclayo"</h1>
   <form onSubmit={handleSubmit}>
     <div class="mb-4">
       <label for="username" class="block text-gray-200">Usuario</label>

@@ -179,7 +179,7 @@ function TravelModal({ isOpen, onClose }) {
       dateRequest: formattedDate,
       priceTravel: travelFormData.price,
     };
-    const response = await fetch("https://teletaxiv1.fraporitmos.com/api/travels/new", {
+    const response = await fetch(`${import.meta.env.VITE_API_NODE_URL}/travels/new`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -188,8 +188,14 @@ function TravelModal({ isOpen, onClose }) {
     });
     if (response.ok) {
       try {
-        
-        await fetch("https://teletaxiv1.fraporitmos.com/api/token/pushdriver", {
+        console.log('Enviando pushdriver payload:', {
+          titulo: "Nueva solicitud Web",
+          descripcion: "Hay una nueva solicitud de viaje para ti.",
+          latitudOrigen: marker.lat,
+          longitudOrigen: marker.lng,
+          cityId: selectedCityId || "r9471och60bcw9u",
+        });
+        const responsePush = await fetch(`${import.meta.env.VITE_API_NODE_URL}/api/token/pushdriver`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -199,9 +205,11 @@ function TravelModal({ isOpen, onClose }) {
             descripcion: "Hay una nueva solicitud de viaje para ti.",
             latitudOrigen: marker.lat,
             longitudOrigen: marker.lng,
-            cityId: selectedCityId,
+            cityId: selectedCityId || "r9471och60bcw9u",
           }),
         });
+        console.log('Respuesta pushdriver status:', responsePush.status);
+        console.log('Respuesta pushdriver:', await responsePush.text());
       } catch (err) {
         // Optionally handle error
       }
@@ -428,7 +436,7 @@ function TravelModal({ isOpen, onClose }) {
               id="price"
               type="text"
               step="any"
-              {...register("price", { valueAsNumber: true })}
+              {...register("price")}
               className="block w-full px-4 py-2  bg-white border border-primary rounded-md text-dark focus:ring focus:ring-primary focus:ring-opacity-40  focus:outline-none"
             />
           </div>

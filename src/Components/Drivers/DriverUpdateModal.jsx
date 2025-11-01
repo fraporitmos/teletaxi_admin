@@ -66,9 +66,9 @@ function DriverUpdateModal({ isOpen, onClose, driverData }) {
         );
       }
 
-      const fullPhotoUrl = `https://teletaxiv1.fraporitmos.com/api/files/${resp.collectionId}/${resp.id}/${resp.photo}`;
-      const fullSoatUrl = `https://teletaxiv1.fraporitmos.com/api/files/${resp.collectionId}/${resp.id}/${resp.soat}`;
-      const fullLicenseUrl = `https://teletaxiv1.fraporitmos.com/api/files/${resp.collectionId}/${resp.id}/${resp.license}`;
+      const fullPhotoUrl = `${import.meta.env.VITE_API_NODE_URL}/files/${resp.collectionId}/${resp.id}/${resp.photo}`;
+      const fullSoatUrl = `${import.meta.env.VITE_API_NODE_URL}/files/${resp.collectionId}/${resp.id}/${resp.soat}`;
+      const fullLicenseUrl = `${import.meta.env.VITE_API_NODE_URL}/files/${resp.collectionId}/${resp.id}/${resp.license}`;
 
       await RemoteService.patch(`/collections/driver/records/${resp.id}`, {
         photoUrlDriver: fullPhotoUrl,
