@@ -195,7 +195,7 @@ function TravelModal({ isOpen, onClose }) {
           longitudOrigen: marker.lng,
           cityId: selectedCityId || "r9471och60bcw9u",
         });
-        const responsePush = await fetch(`${import.meta.env.VITE_API_NODE_URL}/api/token/pushdriver`, {
+        const responsePush = await fetch(`${import.meta.env.VITE_API_NODE_URL}/token/pushdriver`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
