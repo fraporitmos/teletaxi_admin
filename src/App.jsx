@@ -20,7 +20,7 @@ function App() {
   useEffect(() => {
     const user = localStorage.getItem('username')
     const pass = localStorage.getItem('password')
-    if (user === `${import.meta.env.VITE_USERNAME}` && pass === `${import.meta.env.VITE_PASSWORD}`) {
+    if (user === `${import.meta.env.VITE_USERNAME}` && pass === `${import.meta.env.VITE_PASSWORD_CRED}`) {
       setAuthenticated(true)
     }
   }, [])
