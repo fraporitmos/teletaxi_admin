@@ -35,8 +35,10 @@ function DriverTables() {
     try {
       if (!hasFetchedPassenger.current || page !== currentPage) {
         const { items, totalPages } = await RemoteService.get(
-          `/collections/driver/records?page=${page}&perPage=10`
+          `/collections/driver/records?page=${page}&perPage=10&expand=vehicleId,cityId`
         );
+
+                console.log("Drivers data:", JSON.stringify(items));
         setPassengers(items);
         setfilterPassengers(items);
         setTotalPages(totalPages);
@@ -178,17 +180,17 @@ function DriverTables() {
                   </td>
 
                   <td className="px-6 py-4 whitespace-nowrap text-sm textColor">
-                    {driver.unit}
+                    {driver.expand?.vehicleId?.unit?.toString().trim() || driver.unit || driver.expand?.vehicleId?.model || '—'}
                   </td>
 
                   <td className="px-6 py-4 whitespace-nowrap text-sm textColor">
                     {driver.phoneDriver}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm textColor">
-                    {driver.nameCity}
+                    {driver.expand?.cityId?.name || driver.nameCity || '—'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm textColor">
-                    {driver.plate}
+                    {driver.expand?.vehicleId?.plate || driver.plate || '—'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
