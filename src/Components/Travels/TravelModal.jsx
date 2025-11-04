@@ -37,6 +37,17 @@ function getBoundsFromCoords(coordsNorthwest, coordsSoutheast) {
 
 
 function TravelModal({ isOpen, onClose }) {
+  // Aux function to parse dateRequest string (dd/mm/yy HH:MM)
+  const parseDateRequest = (s) => {
+    if (!s || typeof s !== "string") return 0;
+    const [datePart, timePart] = s.split(" ");
+    if (!datePart || !timePart) return 0;
+    const [dd, mm, yy] = datePart.split("/").map(Number);
+    const [HH, MM] = timePart.split(":").map(Number);
+    const fullYear = yy < 100 ? 2000 + yy : yy;
+    const ts = new Date(fullYear, (mm || 1) - 1, dd || 1, HH || 0, MM || 0).getTime();
+    return Number.isNaN(ts) ? 0 : ts;
+  };
   const [cities] = useState([
     { id: "r9471och60bcw9u", nameCity: "Chiclayo" },
   ]);
@@ -70,6 +81,12 @@ function TravelModal({ isOpen, onClose }) {
   const phonePassenger = watch("phonePassenger");
 
   useEffect(() => {
+    if (/^\d{9}$/.test(phonePassenger)) {
+      fetchPassengerAndPlaces(phonePassenger);
+    }
+  }, [phonePassenger]);
+
+  useEffect(() => {
     setValue("cityId", "r9471och60bcw9u");
   }, [setValue]);
 
@@ -97,18 +114,34 @@ function TravelModal({ isOpen, onClose }) {
 
   async function fetchPassengerAndPlaces(phone) {
     try {
+      console.log("🔍 Buscando pasajero con teléfono:", phone);
       const filter = encodeURIComponent(`phonePassenger="${phone}"`);
+      console.log("📡 Llamando a endpoint:", `/collections/passenger/records?expand=cityId&filter=${filter}`);
       const { items } = await RemoteService.get(
         `/collections/passenger/records?expand=cityId&filter=${filter}`
       );
+      console.log("📦 Respuesta items:", items);
       if (items.length) {
         const passenger = items[0];
+        console.log("✅ Pasajero encontrado:", passenger);
+        setValue("namesPassenger", passenger.namesPassenger || "");
+        setValue("emailPassenger", passenger.emailPassenger || "");
+        setValue("photoUrlPassenger", passenger.photoUrlPassenger || "");
+        console.log("🧩 Autocompletando campos con:", {
+          nombre: passenger.namesPassenger,
+          email: passenger.emailPassenger,
+          foto: passenger.photoUrlPassenger
+        });
+        await fetchSavedPlaces(passenger.id);
         passengerIdDynamicRef.current = passenger.id;
         setExistPassenger(true);
-        setValue("namesPassenger", passenger.namesPassenger);
-        setValue("cityId", passenger.cityId);
-        handleSetAutocompleteCoords(passenger.coordsNorthwest, passenger.coordsSoutheast);
-        fetchSavedPlaces(passenger.id);
+      } else {
+        setExistPassenger(false);
+        setPlaces([]);
+        setValue("namesPassenger", "");
+        setValue("emailPassenger", "");
+        setValue("photoUrlPassenger", "");
+        console.log("⚙️ No se encontró pasajero, limpiando campos");
       }
     } catch (err) {
       console.error("Error buscando pasajero:", err);
@@ -117,12 +150,15 @@ function TravelModal({ isOpen, onClose }) {
 
   async function fetchSavedPlaces(passengerId) {
     try {
+      console.log("📍 Buscando lugares guardados para passengerId:", passengerId);
       const filter = encodeURIComponent(`passengerId="${passengerId}"`);
       const { items } = await RemoteService.get(
         `/collections/places_passenger/records?filter=${filter}&sort=-created`
       );
+      console.log("📦 Lugares obtenidos:", items);
       setPlaces(items);
     } catch (err) {
+      console.log("⚠️ Error al cargar lugares:", err);
       console.error("Error loading saved places:", err);
     }
   }

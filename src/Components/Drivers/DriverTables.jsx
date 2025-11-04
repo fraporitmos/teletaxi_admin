@@ -24,12 +24,6 @@ function DriverTables() {
     fetchDrivers();
   }, []);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      fetchDrivers(currentPage);
-    }, 8000);
-    return () => clearInterval(interval);
-  }, [currentPage]);
 
   useEffect(() => {
     if (!modalDriver) {
@@ -45,7 +39,7 @@ function DriverTables() {
           `/collections/driver/records?page=${page}&perPage=10&expand=vehicleId,cityId`
         );
 
-                console.log("Drivers data:", JSON.stringify(items));
+        console.log("Drivers data:", JSON.stringify(items));
         setPassengers(items);
         setfilterPassengers(items);
         setTotalPages(totalPages);

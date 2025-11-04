@@ -1,14 +1,23 @@
 import { motion } from "framer-motion";
 import { Search, Trash2 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
+import PocketBase from "pocketbase";
 import RemoteService from "../../Network/RemoteService";
 import MapsIcon from "../../Assets/maps.png";
 import "../../App.css";
 import TravelModal from "./TravelModal";
 
-
-
 function TravelsTable() {
+  const parseDateRequest = (s) => {
+    if (!s || typeof s !== "string") return 0;
+    const [datePart, timePart] = s.split(" ");
+    if (!datePart || !timePart) return 0;
+    const [dd, mm, yy] = datePart.split("/").map(Number);
+    const [HH, MM] = timePart.split(":").map(Number);
+    const fullYear = yy < 100 ? 2000 + yy : yy;
+    const ts = new Date(fullYear, (mm || 1) - 1, dd || 1, HH || 0, MM || 0).getTime();
+    return Number.isNaN(ts) ? 0 : ts;
+  };
   const [requests, setRequests] = useState([]);
   const [filteredRequests, setFilteredRequests] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -28,7 +37,9 @@ function TravelsTable() {
           `/collections/travel/records?filter=created~'${today}'&expand=cityId,passengerId,driverId,driverId.vehicleId&sort=-created&page=${page}&perPage=10`
         );
         const sortedItems = items.sort(
-          (a, b) => new Date(b.created) - new Date(a.created)
+          (a, b) =>
+            (parseDateRequest(b.dateRequest) || new Date(b.created).getTime()) -
+            (parseDateRequest(a.dateRequest) || new Date(a.created).getTime())
         );
         if (isMounted) {
           setRequests(sortedItems);
@@ -48,6 +59,44 @@ function TravelsTable() {
       isMounted = false;
     };
   }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchRequests = async (page = 1) => {
+      try {
+        const today = new Date().toISOString().split("T")[0];
+        const { items, totalPages } = await RemoteService.get(
+          `/collections/travel/records?filter=created~'${today}'&expand=cityId,passengerId,driverId,driverId.vehicleId&sort=-created&page=${page}&perPage=10`
+        );
+        const sortedItems = items.sort(
+          (a, b) =>
+            (parseDateRequest(b.dateRequest) || new Date(b.created).getTime()) -
+            (parseDateRequest(a.dateRequest) || new Date(a.created).getTime())
+        );
+        if (isMounted) {
+          setRequests(sortedItems);
+          setFilteredRequests(sortedItems);
+          setTotalPages(totalPages);
+        }
+      } catch (err) {
+        console.error("Error actualizando viajes:", err);
+      }
+    };
+
+    // Llamar inmediatamente
+    fetchRequests(currentPage);
+
+    // Intervalo cada 8 segundos
+    const intervalId = setInterval(() => {
+      fetchRequests(currentPage);
+    }, 8000);
+
+    return () => {
+      isMounted = false;
+      clearInterval(intervalId);
+    };
+  }, [currentPage]);
 
   useEffect(() => {
     const fetchCities = async () => {
@@ -348,7 +397,9 @@ function TravelsTable() {
                         `/collections/travel/records?filter=created~'${today}'&expand=cityId,passengerId,driverId,driverId.vehicleId&sort=-created&page=${page}&perPage=10`
                       );
                       const sortedItems = items.sort(
-                        (a, b) => new Date(b.created) - new Date(a.created)
+                        (a, b) =>
+                          (parseDateRequest(b.dateRequest) || new Date(b.created).getTime()) -
+                          (parseDateRequest(a.dateRequest) || new Date(a.created).getTime())
                       );
                       setRequests(sortedItems);
                       setFilteredRequests(sortedItems);
@@ -377,7 +428,9 @@ function TravelsTable() {
                         `/collections/travel/records?filter=created~'${today}'&expand=cityId,passengerId,driverId,driverId.vehicleId&sort=-created&page=${page}&perPage=10`
                       );
                       const sortedItems = items.sort(
-                        (a, b) => new Date(b.created) - new Date(a.created)
+                        (a, b) =>
+                          (parseDateRequest(b.dateRequest) || new Date(b.created).getTime()) -
+                          (parseDateRequest(a.dateRequest) || new Date(a.created).getTime())
                       );
                       setRequests(sortedItems);
                       setFilteredRequests(sortedItems);
