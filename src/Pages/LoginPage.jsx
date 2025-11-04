@@ -47,7 +47,7 @@ const LoginPage = ({ onLogin }) => {
     <div class="mb-6 text-primary">
       <a href="https://wa.me/51947254438" class="underline">Contactar soporte</a>
     </div>
-    <button type="submit" class="bg-primaryDark hover:bg-primaryLight text-white font-semibold rounded-md py-2 px-4 w-full text-lg">Iniciar ahora</button>
+    <button type="submit" class="bg-primaryDark hover:bg-primaryDark text-white font-semibold rounded-md py-2 px-4 w-full text-lg">Ingresar ahora</button>
   </form>
 
 </div>

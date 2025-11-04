@@ -67,7 +67,7 @@ function TravelsTable() {
       try {
         const today = new Date().toISOString().split("T")[0];
         const { items, totalPages } = await RemoteService.get(
-          `/collections/travel/records?filter=created~'${today}'&expand=cityId,passengerId,driverId,driverId.vehicleId&sort=-created&page=${page}&perPage=10`
+          `/collections/travel/records?filter=created~'${today}'&expand=passengerId,driverId,driverId.vehicleId&sort=-created&page=${page}&perPage=10`
         );
         const sortedItems = items.sort(
           (a, b) =>
@@ -251,6 +251,9 @@ function TravelsTable() {
                   <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                     Ruta
                   </th>
+                   <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
+                    Distrito
+                  </th>
 
                   <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                     Estado
@@ -274,10 +277,7 @@ function TravelsTable() {
                       transition={{ duration: 0.3 }}
                     >
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-black">
-                        {new Date(request.created).toLocaleTimeString("es-PE", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
+                        {request.dateRequest }
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-black">
                         {request.namesDriver ? (
@@ -294,9 +294,14 @@ function TravelsTable() {
                           <span>No confirmado</span>
                         )}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-black">
-                        {request.namesPassenger}
-                      </td>
+    <td className="px-6 py-4 whitespace-nowrap text-sm text-black">
+      <div className="flex flex-col">
+        <span>{request.namesPassenger || "Sin nombre"}</span>
+        <span className="text-gray-600 text-xs">
+          Tel: {request.phonePassenger || "Sin número"}
+        </span>
+      </div>
+    </td>
 
                       <td className="px-6 py-4 text-sm text-black">
                         <strong className="text-green-600 font-black">Origen:</strong>{" "}
@@ -322,10 +327,12 @@ function TravelsTable() {
                               ? "bg-gray-700 text-white"
                               : request.status.toLowerCase() === "aceptado"
                               ? "bg-green-800 text-green-100"
+                                : request.status.toLowerCase() === "llegada"
+                              ? "bg-purple-800 bg- text-purple-100"
                               : request.status.toLowerCase() === "finalizado"
                               ? "bg-blue-800 bg- text-blue-100"
-                               : request.status.toLowerCase() === "enruta"
-                              ? "bg-orange-500 text-orange-100"
+                               : request.status.toLowerCase() === "abordo"
+                              ? "bg-yellow-600 text-yellow-100"
                               : "bg-red-800 text-red-100"
                           }`}
                         >
@@ -382,6 +389,8 @@ function TravelsTable() {
                           <Trash2 size={24} />
                         </button>
                       </td>
+
+                      
                     </motion.tr>
                   );
                 })}
