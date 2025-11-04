@@ -25,6 +25,13 @@ function DriverTables() {
   }, []);
 
   useEffect(() => {
+    const interval = setInterval(() => {
+      fetchDrivers(currentPage);
+    }, 8000);
+    return () => clearInterval(interval);
+  }, [currentPage]);
+
+  useEffect(() => {
     if (!modalDriver) {
       hasFetchedPassenger.current = false;
       fetchDrivers();
